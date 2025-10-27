@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class DealershipManager {
-    private static final String FILE_NAME = " inventory.csv";
+    private static final String FILE_NAME = "inventory.csv";
 
     public Dealership getDealership() {
         try(BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -33,7 +33,7 @@ public class DealershipManager {
                     String color = parts[5];
                     int odometer = Integer.parseInt(parts[6]);
 
-                    Vehicle v = new Vehicle(vin, year , model, type, color, odometer, price);
+                    Vehicle v = new Vehicle(vin, year , model, type, color, odometer, (int) price);
                     dealership.addVehicle(v);
                 }
             }
@@ -51,7 +51,7 @@ public class DealershipManager {
                 dealership.getAddress(),
                 dealership.getPhone());
         for (Vehicle v : dealership.getAllVehicles()) {
-            writer.printf("%d|%d|%s|%s|%s|%s|%d|%.2f%n", v.getVin(), v.getYear(), v.getModel(),
+            writer.printf("%d|%d|%s|%s|%s|%s|%d|%.2f%n", v.getVin(), v.getYear(), v.getModel(), v.getType(),
                     v.getColor(), v.getOdometer(), v.getPrice());
         }
     } catch (IOException e) {
