@@ -26,9 +26,3 @@ Java 17, IntelliJ IDEA, CSV File Storage, Object-Oriented Programming Principles
 
 ---
 
-### Main menu
-1) Add Sale
-2) Add Purchase
-3) View Ledger
-4) Reports
-5) Exit
