@@ -9,7 +9,7 @@ public class Vehicle {
     private int odometer;
     private double price;
 
-    public Vehicle(int vin, int year, String model, String type, String color, double price) {
+    public Vehicle(int vin, int year, String model, String type, String color, double price, double v) {
         this.vin = vin;
         this.year = year;
         this.model = model;
