@@ -14,12 +14,6 @@ public class UserInterface {
         DealershipManager dm = new DealershipManager();
         dealership = dm.loadDealership();
 
-        if (dealership == null) {
-            dealership = new Dealership("Amaan's dealership", "123 Poppy St", "925-435-7324");
-            System.out.println("Created new dealership (no existing inventory found).");
-        } else {
-            System.out.println("Dealership loaded successfully!");
-        }
         boolean running = true;
         while (running) {
 
