@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class DealershipManager {
-    private static final String FILE_NAME = "inventory.csv";
+    private static final String FILE_NAME = "Inventory.csv";
 
     public Dealership getDealership() {
         try(BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
