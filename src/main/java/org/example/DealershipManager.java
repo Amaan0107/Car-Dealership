@@ -8,54 +8,84 @@ import java.io.PrintWriter;
 public class DealershipManager {
     private static final String FILE_NAME = "Inventory.csv";
 
-    public Dealership getDealership() {
-        try(BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+
+    public Dealership loadDealership() {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
             String firstLine = br.readLine();
-            if(firstLine == null){
-               throw new IOException("File not found");
+            if (firstLine == null || firstLine.trim().isEmpty()) {
+                throw new IOException("File is empty or missing dealership info");
             }
+
             String[] dealershipInfo = firstLine.split("\\|");
+            if (dealershipInfo.length < 3) {
+                throw new IOException("Invalid dealership info format. Expected: name|address|phone");
+            }
+
             String name = dealershipInfo[0];
             String address = dealershipInfo[1];
             String phone = dealershipInfo[2];
-
             Dealership dealership = new Dealership(name, address, phone);
 
-            String line;
+            // Skip header line if present
+            String line = br.readLine();
+            if (line != null && line.startsWith("VIN")) {
+                line = br.readLine();
+            }
+
+
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\\|");
-                if(parts.length == 8){
-                    int vin = Integer.parseInt(parts[0]);
-                    double price = Double.parseDouble(parts[1]);
-                    int year = Integer.parseInt(parts[2]);
-                    String model = parts[3];
-                    String type = parts[4];
-                    String color = parts[5];
-                    int odometer = Integer.parseInt(parts[6]);
+                if (parts.length != 7) {
+                    System.out.println(line);
+                    continue;
+                }
 
-                    Vehicle v = new Vehicle(vin, year , model, type, color, odometer, (int) price);
+                try {
+                    int vin = Integer.parseInt(parts[0].trim());
+                    int year = Integer.parseInt(parts[1].trim());
+                    String model = parts[2].trim();
+                    String type = parts[3].trim();
+                    String color = parts[4].trim();
+                    double price = Double.parseDouble(parts[5].trim());
+                    int odometer = Integer.parseInt(parts[6].trim());
+
+                    Vehicle v = new Vehicle(vin, year, model, type, color, price, odometer);
                     dealership.addVehicle(v);
+                } catch (NumberFormatException e) {
+                    System.out.println("⚠️ Skipped bad data line: " + line);
                 }
             }
+
             return dealership;
         } catch (IOException e) {
-            System.out.println("Error reading file");
+            System.out.println("Error reading file: " + e.getMessage());
             return null;
         }
     }
 
     public void saveDealership(Dealership dealership) {
-    try(PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
-        writer.printf("%s|%s|%s%n",
-                dealership.getName(),
-                dealership.getAddress(),
-                dealership.getPhone());
-        for (Vehicle v : dealership.getAllVehicles()) {
-            writer.printf("%d|%d|%s|%s|%s|%s|%d|%.2f%n", v.getVin(), v.getYear(), v.getModel(), v.getType(),
-                    v.getColor(), v.getOdometer(), v.getPrice());
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+            writer.printf("%s|%s|%s%n",
+                    dealership.getName(),
+                    dealership.getAddress(),
+                    dealership.getPhone());
+
+            writer.println("VIN|Year|Model|Type|Color|Price|Miles");
+
+            for (Vehicle v : dealership.getAllVehicles()) {
+                writer.printf("%d|%d|%s|%s|%s|%.2f|%d%n",
+                        v.getVin(),
+                        v.getYear(),
+                        v.getModel(),
+                        v.getType(),
+                        v.getColor(),
+                        v.getPrice(),
+                        v.getOdometer());
+            }
+
+            System.out.println("Dealership data saved successfully!");
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e.getMessage());
         }
-    } catch (IOException e) {
-        System.out.println("Error saving file");
-    }
     }
 }

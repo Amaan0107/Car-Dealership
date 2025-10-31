@@ -1,4 +1,5 @@
 package org.example;
+import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -6,10 +7,19 @@ import java.util.Scanner;
 public class UserInterface {
     private Dealership dealership;
     private final Scanner scanner = new Scanner(System.in);
+    private PrintWriter writer;
 
     public void showMenu() {
         dealership = new Dealership("Amaan's dealership", "123 Poppy St", "925-435-7324");
+        DealershipManager dm = new DealershipManager();
+        dealership = dm.loadDealership();
 
+        if (dealership == null) {
+            dealership = new Dealership("Amaan's dealership", "123 Poppy St", "925-435-7324");
+            System.out.println("Created new dealership (no existing inventory found).");
+        } else {
+            System.out.println("Dealership loaded successfully!");
+        }
         boolean running = true;
         while (running) {
 
@@ -23,7 +33,7 @@ public class UserInterface {
             System.out.println("------------------------------");
             System.out.printf("Enter here:");
 
-            String choice = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1" -> getByPrice();
@@ -41,17 +51,17 @@ public class UserInterface {
 
     void init() {
         DealershipManager dfm = new DealershipManager();
-        dealership = dfm.getDealership();
-        System.out.println("Dealership loaded successfully!");
+        dealership = dfm.loadDealership();
     }
 
     public void getByPrice() {
         try {
+            System.out.print("Enter min price: ");
+            double min = Double.parseDouble(scanner.nextLine().replace(",", "").trim());
 
-            System.out.printf("Enter min price:");
-            double min = scanner.nextDouble();
-            System.out.printf("Enter max price:");
-            double max = scanner.nextDouble();
+            System.out.print("Enter max price: ");
+            double max = Double.parseDouble(scanner.nextLine().replace(",", "").trim());
+
 
             List<Vehicle> results = dealership.getVehiclesByPrice(min, max);
             displayVehicles(results);
@@ -75,16 +85,25 @@ public class UserInterface {
     }
 
     private void displayVehicles(List<Vehicle> vehicles) {
-        if (vehicles.isEmpty()) {
+        if (vehicles == null || vehicles.isEmpty()) {
             System.out.println("There are no vehicles in the dealership");
-        } else {
-            System.out.println("-----------------Inventory----------------");
-            for (Vehicle v : vehicles) {
-                System.out.printf("%d | %d | %s | %s | %s |  $%.2f | %d miles%n",
-                        v.getVin(), v.getYear(), v.getModel(),
-                        v.getType(), v.getColor(), v.getOdometer(),
-                        v.getPrice());
-            }
+            return;
+        }
+
+        System.out.println("-----------------Inventory----------------");
+        System.out.printf("%-8s | %-6s | %-10s | %-10s | %-10s | %-10s | %-8s%n",
+                "VIN", "Year", "Model", "Type", "Color", "Price", "Miles");
+        System.out.println("-----------------------------------------------------------------------");
+
+        for (Vehicle v : vehicles) {
+            System.out.printf("%-8d | %-6d | %-10s | %-10s | %-10s | $%-9.2f | %-8d%n",
+                    v.getVin(),
+                    v.getYear(),
+                    v.getModel(),
+                    v.getType(),
+                    v.getColor(),
+                    v.getPrice(),
+                    v.getOdometer());
         }
     }
 
@@ -104,11 +123,15 @@ public class UserInterface {
             }
             if (toRemove != null) {
                 dealership.removeVehicle(toRemove);
+
+                DealershipManager dm = new DealershipManager();
+                dm.saveDealership(dealership);
+
                 System.out.println("Vehicle removed successfully!");
             } else {
                 System.out.println("Invalid VIN number");
             }
-            scanner.nextLine();
+            scanner.nextLine().trim();
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
         }
@@ -116,45 +139,43 @@ public class UserInterface {
 
     private void addVehicle() {
         try {
-
-
             System.out.println("Adding vehicle to dealership");
 
             System.out.print("Enter VIN num:");
-            int vin = scanner.nextInt();
+            int vin = Integer.parseInt(scanner.nextLine().trim());
 
             System.out.print("Enter year:");
-            int year = scanner.nextInt();
+            int year = Integer.parseInt(scanner.nextLine().trim());
 
             System.out.print("Enter model:");
-            String model = scanner.next();
+            String model = scanner.nextLine().trim();
 
-            System.out.print("Enter Type:");
-            String type = scanner.next();
+            System.out.print("Enter type:");
+            String type = scanner.nextLine().trim();
 
             System.out.print("Enter color:");
-            String color = scanner.next();
+            String color = scanner.nextLine().trim();
 
             System.out.print("Enter odometer:");
-            double odometer = scanner.nextDouble();
+            double odometer = Double.parseDouble(scanner.nextLine().replace(",", "").trim());
 
             System.out.print("Enter price:");
-            double price = scanner.nextDouble();
+            double price = Double.parseDouble(scanner.nextLine().replace(",", "").trim());
 
-            scanner.nextLine();
-
-            Vehicle v = new Vehicle(vin, year, model, type, color, odometer, (int) price);
+            Vehicle v = new Vehicle(vin, year, model, type, color, price, (int) odometer);
             dealership.addVehicle(v);
+
             System.out.println("Vehicle added successfully!");
 
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input type. Please enter numbers where required.");
-            scanner.nextLine();
+            DealershipManager dm = new DealershipManager();
+            dm.saveDealership(dealership);
+
+            System.out.println("Vehicle added and saved successfully!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format. Please don’t include letters or symbols.");
         } catch (Exception e) {
             System.out.println("Unexpected error: " + e.getMessage());
-            scanner.nextLine();
-        }finally {
-            scanner.nextLine();
         }
     }
 }

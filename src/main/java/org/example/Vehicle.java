@@ -78,7 +78,8 @@ public class Vehicle {
 
     @Override
     public String toString() {
-        return vin + " | " + year + " | " + model + " | " + type + " | " + color + " | " + odometer + " | " + price;
+        return String.format("%d | %d | %s | %s | %s | $%.2f | %d miles",
+                vin, year, model, type, color, price, odometer);
     }
 }
 
