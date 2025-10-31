@@ -1,5 +1,6 @@
 package org.example;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -19,11 +20,16 @@ public class UserInterface {
 
             System.out.println("Welcome to Car Dealership");
             System.out.println("--------Dealership Menu--------");
-            System.out.println("1) Search by price ");
-            System.out.println("2) Add Vehicle ");
-            System.out.println("3) Remove Vehicle ");
-            System.out.println("4) Show All Vehicles");
-            System.out.println("5) Exit");
+            System.out.println("1) Search by Price ");
+            System.out.println("2) Search by Model ");
+            System.out.println("3) Search by year range ");
+            System.out.println("4) Search by Color ");
+            System.out.println("5) Search by Mileage ");
+            System.out.println("6) Search by Type ");
+            System.out.println("7) Add Vehicle ");
+            System.out.println("8) Remove Vehicle ");
+            System.out.println("9) Show All Vehicles");
+            System.out.println("0) Exit");
             System.out.println("------------------------------");
             System.out.printf("Enter here:");
 
@@ -31,10 +37,15 @@ public class UserInterface {
 
             switch (choice) {
                 case "1" -> getByPrice();
-                case "2" -> addVehicle();
-                case "3" -> removeVehicle();
-                case "4" -> showAllVehicles();
-                case "5" -> {
+                case "2" -> getByModel();
+                case "3"  -> getByYearRange();
+                case "4" -> getByColor();
+                case "5"  -> getByMileage();
+                case "6"  -> getByType();
+                case "7" -> addVehicle();
+                case "8" -> removeVehicle();
+                case "9" -> showAllVehicles();
+                case "0" -> {
                     System.out.println("Goodbye !!");
                     running = false;
                 }
@@ -44,8 +55,111 @@ public class UserInterface {
     }
 
     void init() {
+
         DealershipManager dfm = new DealershipManager();
         dealership = dfm.loadDealership();
+
+    }
+    public void getByModel() {
+        try{
+
+            System.out.print("Enter Model: ");
+            String model = scanner.nextLine().trim();
+
+            List<Vehicle> results = dealership.getVehiclesByModel(model);
+            displayVehicles(results);
+
+            if (results.isEmpty()) {
+                System.out.println("We do not have vehicles in that Model.");
+            }
+
+        }catch(InputMismatchException e){
+
+            System.out.println("Invalid Model");
+
+        } finally {
+
+            scanner.nextLine();
+        }
+
+    }
+    public void getByYearRange() {
+        try {
+            System.out.print("From: ");
+            int  from = scanner.nextInt();
+
+            System.out.print("To: ");
+            int to = scanner.nextInt();
+
+
+            List<Vehicle> results = dealership.getVehiclesByYear(from, to);
+            displayVehicles(results);
+
+            if (results.isEmpty()) {
+                System.out.println("We do not have vehicles in that range.");
+            }
+
+        }catch (InputMismatchException e){
+            System.out.println("Invalid input");
+        }finally {
+            scanner.nextLine();
+        }
+    }
+    public void getByColor() {
+        try {
+            System.out.print("Color: ");
+            String color = scanner.nextLine().trim();
+
+            List<Vehicle> results = dealership.getVehiclesByColor(color);
+            displayVehicles(results);
+
+            if (results.isEmpty()) {
+                System.out.println("We do not have vehicles in that color.");
+            }
+
+        }catch (InputMismatchException e){
+            System.out.println("Invalid input");
+        }finally {
+            scanner.nextLine();
+        }
+    }
+    public void getByMileage() {
+        try {
+            System.out.print("Max mileage: ");
+            int maxMileage = scanner.nextInt();
+            System.out.print("Min mileage: ");
+            int minMileage = scanner.nextInt();
+
+            List<Vehicle> results = dealership.getVehiclesByMilage(minMileage, maxMileage);
+            displayVehicles(results);
+
+            if (results.isEmpty()) {
+                System.out.println("We do not have vehicles in that range.");
+            }
+
+        }catch (InputMismatchException e){
+            System.out.println("Invalid input");
+        }finally {
+            scanner.nextLine();
+        }
+    }
+    public void getByType(){
+        try {
+            System.out.print("Type: ");
+            String type = scanner.nextLine().trim();
+
+            List<Vehicle> results = dealership.getVehiclesByType(type);
+            displayVehicles(results);
+
+            if (results.isEmpty()) {
+                System.out.println("We do not have vehicles in that Type.");
+            }
+
+        }catch (InputMismatchException e){
+            System.out.println("Invalid input");
+        }finally {
+            scanner.nextLine();
+        }
     }
 
     public void getByPrice() {
@@ -59,6 +173,11 @@ public class UserInterface {
 
             List<Vehicle> results = dealership.getVehiclesByPrice(min, max);
             displayVehicles(results);
+
+            if (results.isEmpty()) {
+                System.out.println("We do not have vehicles in that range.");
+            }
+
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
         }finally {
@@ -68,9 +187,9 @@ public class UserInterface {
     private void showAllVehicles() {
         try {
 
-
             List<Vehicle> vehicles = dealership.getAllVehicles();
             displayVehicles(vehicles);
+
         }catch (InputMismatchException e){
             System.out.println("No cars in Inventory");
         }finally {
