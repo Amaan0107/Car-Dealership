@@ -36,7 +36,6 @@ public class DealershipManager {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\\|");
                 if (parts.length != 7) {
-                    System.out.println(line);
                     continue;
                 }
 
@@ -52,7 +51,7 @@ public class DealershipManager {
                     Vehicle v = new Vehicle(vin, year, model, type, color, price, odometer);
                     dealership.addVehicle(v);
                 } catch (NumberFormatException e) {
-                    System.out.println("⚠️ Skipped bad data line: " + line);
+                    System.out.println("Skipped bad data line: " + line);
                 }
             }
 
