@@ -61,18 +61,18 @@ public class UserInterface {
         }
     }
     public void createSalesContract() {
-        try{
+        try {
             System.out.println("Enter Vehicle VIN num:");
             String vin = scanner.nextLine().trim();
 
-        for (Vehicle v : dealership.getAllVehicles()) {
-            if (v.getVin() == vin) chosen = v;
-        }
+            for (Vehicle v : dealership.getAllVehicles()) {
+                if (v.getVin() == vin) chosen = v;
+            }
 
-        if (chosen == null) {
-            System.out.println("Vehicle not found.");
-            return;
-        }
+            if (chosen == null) {
+                System.out.println("Vehicle not found.");
+                return;
+            }
         }
     }
 
