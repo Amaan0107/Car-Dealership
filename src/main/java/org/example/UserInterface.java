@@ -27,29 +27,52 @@ public class UserInterface {
             System.out.println("6) Search by Type ");
             System.out.println("7) Add Vehicle ");
             System.out.println("8) Remove Vehicle ");
-            System.out.println("9) Show All Vehicles");
+            System.out.println("9) Create Sales Contract");
+            System.out.println("10) Create Lease Contract");
+            System.out.println("11) Show All Vehicles");
             System.out.println("0) Exit");
             System.out.println("------------------------------");
             System.out.printf("Enter here:");
 
             String choice = scanner.nextLine().trim();
 
-            switch (choice) {
-                case "1" -> getByPrice();
-                case "2" -> getByModel();
-                case "3"  -> getByYearRange();
-                case "4" -> getByColor();
-                case "5"  -> getByMileage();
-                case "6"  -> getByType();
-                case "7" -> addVehicle();
-                case "8" -> removeVehicle();
-                case "9" -> showAllVehicles();
-                case "0" -> {
-                    System.out.println("Goodbye !!");
-                    running = false;
+            try {
+                switch (choice) {
+                    case "1" -> getByPrice();
+                    case "2" -> getByModel();
+                    case "3" -> getByYearRange();
+                    case "4" -> getByColor();
+                    case "5" -> getByMileage();
+                    case "6" -> getByType();
+                    case "7" -> addVehicle();
+                    case "8" -> removeVehicle();
+                    case "9" -> createSalesContract();
+                    case "10" -> createLeaseContract();
+                    case "11" -> showAllVehicles();
+                    case "0" -> {
+                        System.out.println("Goodbye !!");
+                        running = false;
+                    }
+                    default -> System.out.println("Invalid choice");
                 }
-                default -> System.out.println("Invalid choice");
+            }catch (InputMismatchException ime) {
+                System.out.println("Please enter a valid choice");
             }
+        }
+    }
+    public void createSalesContract() {
+        try{
+            System.out.println("Enter Vehicle VIN num:");
+            String vin = scanner.nextLine().trim();
+
+        for (Vehicle v : dealership.getAllVehicles()) {
+            if (v.getVin() == vin) chosen = v;
+        }
+
+        if (chosen == null) {
+            System.out.println("Vehicle not found.");
+            return;
+        }
         }
     }
 
