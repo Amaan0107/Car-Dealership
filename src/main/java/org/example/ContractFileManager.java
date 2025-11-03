@@ -12,7 +12,9 @@ public class ContractFileManager {
 
             if (contract instanceof SalesContract sc) {
                 writer.write(String.format(
-                        "SALE|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f|%s|%.2f%n",
+                        "SALE|%s|%s|%s|%d|%d|%n" +
+                        "%s|%s|%s|%s|%d|%.2f|%n" +
+                        "%.2f|%.2f|%.2f|%.2f|%s|%.2f%n",
                         sc.getDateOfContract(),
                         sc.getCustomerName(),
                         sc.getCustomerEmail(),
@@ -33,7 +35,9 @@ public class ContractFileManager {
                 ));
             } else if (contract instanceof LeaseContract lc) {
                 writer.write(String.format(
-                        "LEASE|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f%n",
+                        "LEASE|%s|%s|%s|%d|%d|%n" +
+                        "%s|%s|%s|%s|%d|%.2f|%n" +
+                        "%.2f|%.2f|%.2f|%.2f%n",
                         lc.getDateOfContract(),
                         lc.getCustomerName(),
                         lc.getCustomerEmail(),

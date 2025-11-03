@@ -62,17 +62,68 @@ public class UserInterface {
     }
     public void createSalesContract() {
         try {
-            System.out.println("Enter Vehicle VIN num:");
-            String vin = scanner.nextLine().trim();
+            System.out.printf("Enter Vehicle VIN num:");
+           int vin = Integer.parseInt(scanner.nextLine().trim());
 
+           Vehicle chosen = null;
             for (Vehicle v : dealership.getAllVehicles()) {
-                if (v.getVin() == vin) chosen = v;
+                if (v.getVin() == vin) {
+                    chosen = v;
+                }
             }
 
             if (chosen == null) {
                 System.out.println("Vehicle not found.");
                 return;
             }
+            System.out.print("Enter Customer name:");
+            String customerName = scanner.nextLine().trim();
+            System.out.print("Enter Customer email:");
+            String customerEmail = scanner.nextLine().trim();
+            System.out.print("Enter Date:");
+            String date = scanner.nextLine().trim();
+            System.out.print("Finance(yes/no):");
+            boolean finance = scanner.nextLine().equalsIgnoreCase("yes");
+
+            SalesContract sc = new SalesContract(customerName, customerEmail, date, chosen, finance);
+            ContractFileManager cfm = new ContractFileManager();
+            cfm.saveContract(sc);
+        }catch (InputMismatchException ime) {
+            System.out.println("Please enter a valid choice");
+        }
+    }
+    public void createLeaseContract() {
+        try {
+            System.out.printf("Enter Vehicle VIN num:");
+            int vin = Integer.parseInt(scanner.nextLine().trim());
+            Vehicle chosen = null;
+            for (Vehicle v : dealership.getAllVehicles()) {
+                if (v.getVin() == vin) {
+                    chosen = v;
+
+                }
+            }
+            if (chosen == null) {
+                System.out.println("Vehicle not found.");
+                return;
+            }
+            System.out.print("Enter Customer name:");
+            String customerName = scanner.nextLine().trim();
+            System.out.print("Enter Customer email:");
+            String customerEmail = scanner.nextLine().trim();
+            System.out.print("Enter Date:");
+            String date = scanner.nextLine().trim();
+
+            LeaseContract lc = new LeaseContract(customerName, customerEmail, date, chosen);
+
+            System.out.printf("Lease created! Total price: $%.2f, Monthly: $%.2f%n",
+                    lc.getTotalPrice(), lc.getMonthlyPayment());
+
+            ContractFileManager cfm = new ContractFileManager();
+            cfm.saveContract(lc);
+
+        }catch (InputMismatchException ime){
+            System.out.println("Please enter a valid choice");
         }
     }
 
@@ -99,9 +150,6 @@ public class UserInterface {
 
             System.out.println("Invalid Model");
 
-        } finally {
-
-            scanner.nextLine();
         }
 
     }
@@ -123,8 +171,6 @@ public class UserInterface {
 
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
-        }finally {
-            scanner.nextLine();
         }
     }
     public void getByColor() {
@@ -141,8 +187,6 @@ public class UserInterface {
 
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
-        }finally {
-            scanner.nextLine();
         }
     }
     public void getByMileage() {
@@ -161,8 +205,6 @@ public class UserInterface {
 
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
-        }finally {
-            scanner.nextLine();
         }
     }
     public void getByType(){
@@ -179,8 +221,6 @@ public class UserInterface {
 
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
-        }finally {
-            scanner.nextLine();
         }
     }
 
@@ -202,11 +242,9 @@ public class UserInterface {
 
         }catch (InputMismatchException e){
             System.out.println("Invalid input");
-        }finally {
-            scanner.nextLine();
         }
     }
-    private void showAllVehicles() {
+    public void showAllVehicles() {
         try {
 
             List<Vehicle> vehicles = dealership.getAllVehicles();
@@ -214,8 +252,6 @@ public class UserInterface {
 
         }catch (InputMismatchException e){
             System.out.println("No cars in Inventory");
-        }finally {
-            scanner.nextLine();
         }
     }
 
@@ -313,4 +349,30 @@ public class UserInterface {
             System.out.println("Unexpected error: " + e.getMessage());
         }
     }
+    public void showIntro(){
+        String[] intro = {
+                "__          __  _                            _ \n" +
+                        "\\ \\        / / | |                          | |\n" +
+                        " \\ \\  /\\  / /__| | ___ ___  _ __ ___   ___  | |\n" +
+                        "  \\ \\/  \\/ / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | |\n" +
+                        "   \\  /\\  /  __/ | (_| (_) | | | | | |  __/ |_|\n" +
+                        "    \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___| (_)\n" +
+                        "                                               \n" +
+                        "           \uD83D\uDE97  to Amaan's Dealership  \uD83D\uDE97"};
+        for (String line : intro) {
+            System.out.println(line);
+            try { Thread.sleep(300); } catch (InterruptedException e) {}
+        }
+
+        System.out.print("\nLoading inventory");
+        try {
+            for (int i = 0; i < 5; i++) {
+                Thread.sleep(500);
+                System.out.print(".");
+            }
+        } catch (InterruptedException e) {}
+
+        System.out.println("\n System Ready!\n");
+    }
+
 }
